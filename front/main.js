@@ -8,7 +8,7 @@ import {
   Layout, LayoutBody, TopBar, NoHits, LayoutResults, SideBar,
 } from 'searchkit';
 
-const searchkit = new SearchkitManager('http://localhost:9200/slack/message');
+const searchkit = new SearchkitManager('/');
 
 const HitItem = (props) => {
   const message = props.result._source;
