@@ -1,0 +1,8 @@
+http:
+  cors:
+    enabled: true
+    allow-origin: "*"
+    allow-methods: OPTIONS, HEAD, GET, POST, PUT, DELETE
+    allow-headers: X-Requested-With,X-Auth-Token,Content-Type, Content-Length
+path:
+  data: ./data
