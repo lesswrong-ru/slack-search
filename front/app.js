@@ -16,6 +16,6 @@ SearchkitExpress({
     }
 }, app);
 
-app.listen(8000, function () {
+app.listen(8000, 'localhost', function () {
     console.log('Slack search is listening!');
 })
