@@ -1,70 +1,12 @@
 #!/usr/bin/env python3
 
 import argparse
-import json
-import os
-import sys
 import re
-import os.path
 from datetime import datetime
 from collections import defaultdict
 from termcolor import colored
 
-class SlackLog:
-    def __init__(self, archive, channel_name, filename):
-        self.archive = archive
-        self.channel_name = channel_name
-        self.filename = filename
-
-    def read_all(self):
-        full_name = self.archive.root + '/' + self.channel_name + '/' + self.filename
-        messages = json.load(open(full_name))
-        for message in messages:
-            message['channel'] = self.channel_name
-            yield message
-
-    def date(self):
-        return datetime.strptime(self.filename, '%Y-%m-%d.json').date()
-
-
-class SlackArchive:
-    def __init__(self, root):
-        self.root = root
-
-    def users(self):
-        users_file = self.root + '/users.json'
-        users_data = json.load(open(users_file))
-
-        for user in users_data:
-            yield user
-
-    def channels(self):
-        channels_file = self.root + '/channels.json'
-        for channel in json.load(open(channels_file)):
-            yield channel
-
-    def channel_names(self):
-        for channel in self.channels():
-            yield channel['name']
-
-    def channel_logs(self, channel_name):
-        directory = self.root + '/' + channel_name
-
-        for filename in os.listdir(directory):
-            full_name = os.path.join(directory, filename)
-            if not os.path.isfile(full_name):
-                continue
-            yield SlackLog(self, channel_name, filename)
-
-    def traverse(self, min_date=None, max_date=None):
-        for channel_name in self.channel_names():
-            print('processing channel ' + channel_name, file=sys.stderr)
-            for log in self.channel_logs(channel_name):
-                if (min_date and log.date() < min_date) or (max_date and log.date() > max_date):
-                    continue
-                for message in log.read_all():
-                    yield message
-
+from lwslack import SlackArchive
 
 class Stat:
     def __init__(self):
@@ -100,14 +42,6 @@ class Stat:
         self.print_top('facepalm', 10)
 
 
-def load_users(archive):
-    users = {}
-    for user in archive.users():
-        users[user['id']] = user['name']
-
-    return users
-
-
 def normalize_emoji(emoji):
     return re.sub(r'::.*', '', emoji)
 
@@ -132,7 +66,7 @@ def process_message(message, users, stat):
 
 
 def find_offenders(archive, min_date=None, max_date=None):
-    users = load_users(archive)
+    users = archive.users_dict()
     dup_stats = defaultdict(int)
     total_stats = defaultdict(int)
     total_message_length = defaultdict(int)
@@ -187,7 +121,7 @@ def main():
     archive = SlackArchive(args.root)
 
     if args.mode == 'emoji':
-        users = load_users(archive)
+        users = archive.users_dict()
         stat = Stat()
 
         for message in archive.traverse(min_date=min_date, max_date=max_date):
