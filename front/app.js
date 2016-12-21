@@ -2,16 +2,29 @@ var express = require('express');
 var SearchkitExpress = require('searchkit-express');
 var bodyParser = require('body-parser');
 var path = require('path');
+var fs = require('fs');
 
 var app = express();
 app.use(express.static('static'));
 
-app.use(
-  '/archive-data',
-  express.static(path.join(__dirname, '..', 'archive'))
-);
+var archiveDir = path.join(__dirname, '..', 'archive');
 
-app.get('/*', function(req, res){
+app.use('/archive-data', express.static(archiveDir));
+
+app.get('/archive-data/:channel/dates', function(req, res) {
+  fs.readdir(
+    path.join(archiveDir, req.params.channel),
+    (err, files) => {
+      res.send(
+        files.map(function (filename) {
+            return filename.replace(RegExp('\.json$'), '');
+        })
+      );
+    }
+  );
+});
+
+app.get('/*', function(req, res) {
   res.sendFile(__dirname + '/static/index.html');
 });
 

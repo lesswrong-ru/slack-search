@@ -7,7 +7,7 @@ import {
   Layout, LayoutBody, TopBar, NoHits, LayoutResults, SideBar, SortingSelector
 } from 'searchkit';
 
-import SlackArchive from './archive';
+import { ArchiveChannelList, ArchiveChannelDates, ArchiveLog } from './archive';
 import SlackMessage from './components/SlackMessage';
 
 const searchkit = new SearchkitManager('/');
@@ -44,6 +44,8 @@ const SearchPage = () => (
 ReactDOM.render((
   <Router history={browserHistory}>
     <Route path="/" component={SearchPage} />
-    <Route path="/archive/:channel/:date" component={SlackArchive} />
+    <Route path="/archive" component={ArchiveChannelList} />
+    <Route path="/archive/:channel" component={ArchiveChannelDates} />
+    <Route path="/archive/:channel/:date" component={ArchiveLog} />
   </Router>
 ), document.getElementById('root'));
