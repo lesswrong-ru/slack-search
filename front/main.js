@@ -1,45 +1,20 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-
-import moment from 'moment';
+import { Router, Route, browserHistory } from 'react-router';
 
 import {
   SearchkitManager, SearchkitProvider, SearchBox, Hits,
   Layout, LayoutBody, TopBar, NoHits, LayoutResults, SideBar, SortingSelector
 } from 'searchkit';
 
+import SlackArchive from './archive';
+import SlackMessage from './components/SlackMessage';
+
 const searchkit = new SearchkitManager('/');
 
-const HitItem = (props) => {
-  const message = props.result._source;
-  const ts = moment(parseFloat(message.ts) * 1000);
-  const now = moment();
-  const date = (ts.year() === now.year() ? ts.format('MMM Do') : ts.format('YYYY MMM Do'));
+const HitItem = props => <SlackMessage {...props.result._source} />;
 
-  return (
-    <div className='message'>
-      <div className='message-context'>
-        <div className='message-channel'>
-           #{message.channel}
-        </div>
-        <div className='message-date'>
-          {date}
-        </div>
-      </div>
-      <div className='message-main'>
-        <div className='message-author'>
-          {message.user}
-        </div>
-        <div className='message-text'>
-          {message.text}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-
-ReactDOM.render((
+const SearchPage = () => (
   <SearchkitProvider searchkit={searchkit}>
     <Layout>
       <TopBar>
@@ -56,12 +31,19 @@ ReactDOM.render((
         </SideBar>
         <LayoutResults>
           <Hits
-            hitsPerPage={50}
-            itemComponent={HitItem}
+        hitsPerPage={50}
+        itemComponent={HitItem}
           />
           <NoHits />
         </LayoutResults>
       </LayoutBody>
     </Layout>
   </SearchkitProvider>
+);
+
+ReactDOM.render((
+  <Router history={browserHistory}>
+    <Route path="/" component={SearchPage} />
+    <Route path="/archive/:channel/:date" component={SlackArchive} />
+  </Router>
 ), document.getElementById('root'));

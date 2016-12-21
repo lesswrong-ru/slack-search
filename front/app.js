@@ -1,9 +1,19 @@
 var express = require('express');
 var SearchkitExpress = require('searchkit-express');
 var bodyParser = require('body-parser');
+var path = require('path');
 
 var app = express();
 app.use(express.static('static'));
+
+app.use(
+  '/archive-data',
+  express.static(path.join(__dirname, '..', 'archive'))
+);
+
+app.get('/*', function(req, res){
+  res.sendFile(__dirname + '/static/index.html');
+});
 
 app.use(bodyParser.json());
 SearchkitExpress({
