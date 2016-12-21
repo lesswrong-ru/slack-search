@@ -5,7 +5,7 @@ import moment from 'moment';
 
 import {
   SearchkitManager, SearchkitProvider, SearchBox, Hits,
-  Layout, LayoutBody, TopBar, NoHits, LayoutResults, SideBar,
+  Layout, LayoutBody, TopBar, NoHits, LayoutResults, SideBar, SortingSelector
 } from 'searchkit';
 
 const searchkit = new SearchkitManager('/');
@@ -49,6 +49,10 @@ ReactDOM.render((
       </TopBar>
       <LayoutBody>
         <SideBar>
+          <SortingSelector options={[
+            {label: 'Latest', field: 'millits', order: 'desc', defaultOption: true},
+            {label: 'Relevance', field: '_score', order: 'desc'},
+          ]} />
         </SideBar>
         <LayoutResults>
           <Hits

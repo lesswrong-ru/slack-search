@@ -1,3 +1,4 @@
 /static/built.js
 /static/built.js.map
 /node_modules
+/npm-debug.log
