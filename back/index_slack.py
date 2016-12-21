@@ -1,50 +1,48 @@
 #!/usr/bin/env python3
 
-import os
-import os.path
-import json
+from lwslack import SlackArchive
+
+import argparse
 import requests
-
-class SlackArchive:
-    def __init__(self, root):
-        self.root = root
-
-    def users(self):
-        users_file = self.root + '/users.json'
-        users_data = json.load(open(users_file))
-
-        for user in users_data:
-            yield user
-
-    def channels(self):
-        channels_file = self.root + '/channels.json'
-        for channel in json.load(open(channels_file)):
-            yield channel
-
-    def channel_names(self):
-        for channel in self.channels():
-            yield channel['name']
-
-    def channel_logs(self, channel_name):
-        directory = self.root + '/' + channel_name
-
-        for filename in os.listdir(directory):
-            full_name = os.path.join(directory, filename)
-            if not os.path.isfile(full_name):
-                continue
-            yield filename
-
-    def process_log(self, channel_name, filename):
-        full_name = self.root + '/' + channel_name + '/' + filename
-        messages = json.load(open(full_name))
-        for message in messages:
-            message['channel'] = channel_name
-            yield message
-
+from datetime import datetime
+from termcolor import colored
+import json
 
 class Elastic:
     def __init__(self, endpoint='http://localhost:9200'):
         self.endpoint = endpoint
+        self._bulk_buffer = []
+
+    def delete_index(self, index):
+        print(colored('Deleting index {}'.format(index), 'red'))
+        requests.delete(
+            '{}/{}'.format(self.endpoint, index)
+        ).raise_for_status()
+
+    def create_index(self, index):
+        print(colored('Creating index {}'.format(index), 'green'))
+        requests.put(
+            '{}/{}'.format(self.endpoint, index),
+            json={
+                'mappings': {
+                    'message': {
+                        'properties': {
+                            'millits': {
+                                'type': 'date',
+                                'format': 'epoch_millis',
+                            },
+                            'attachments': {
+                                'properties': {
+                                    'ts': {
+                                        'type': 'text', # indexing fails otherwise
+                                    }
+                                }
+                            },
+                        }
+                    }
+                }
+            }
+        ).raise_for_status()
 
     def add(self, index, doc_type, doc_id, content):
         r = requests.put(
@@ -56,7 +54,40 @@ class Elastic:
             ),
             json=content
         )
+
+        if r.status_code == 400:
+            print(r.text)
+            print(content)
         r.raise_for_status()
+
+    def bulk_push(self, index, doc_type, doc_id, content):
+        self._bulk_buffer.append(
+            (index, doc_type, doc_id, content)
+        )
+        if len(self._bulk_buffer) >= 100:
+            self.bulk_commit()
+
+    def bulk_commit(self):
+        if not self._bulk_buffer:
+            return
+
+        requests.post(
+            '{}/_bulk'.format(self.endpoint),
+            data=''.join([
+                json.dumps({
+                    'index': {
+                        '_index': item[0],
+                        '_type': item[1],
+                        '_id': item[2],
+                    }
+                }) + '\n'
+                + json.dumps(
+                    item[3]
+                ) + '\n'
+                for item in self._bulk_buffer
+            ])
+        ).raise_for_status()
+        self._bulk_buffer = []
 
 
 def index_users(archive, elastic):
@@ -64,26 +95,50 @@ def index_users(archive, elastic):
         elastic.add('slack', 'user', user['id'], user)
 
 
-def index_messages(archive, elastic):
-    for channel in archive.channel_names():
-        for filename in archive.channel_logs(channel):
-            print('{}/{}'.format(channel, filename))
+def index_messages(archive, elastic, min_date=None, max_date=None):
+    users = archive.users_dict()
+    for message in archive.traverse(min_date=min_date, max_date=max_date):
+        if 'user' not in message:
+            continue
 
-            for message in archive.process_log(channel, filename):
-                if 'user' not in message:
-                    continue
+        doc_id = message['user'] + '_' + message['ts']
+        user_id = message['user']
+        message['user'] = users.get(user_id, 'UNKNOWN')
+        message['millits'] = int(float(message['ts']) * 1000) # milliseconds since epoch
 
-                elastic.add(
-                    'slack',
-                    'message',
-                    message['user'] + '_' + message['ts'],
-                    message
-                )
+        elastic.bulk_push(
+            'slack',
+            'message',
+            doc_id,
+            message
+        )
+
+    elastic.bulk_commit()
 
 def main():
-    archive = SlackArchive('/Users/berekuk/Downloads/slack/nov-24')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--min-date')
+    parser.add_argument('--max-date')
+    parser.add_argument('root')
+    parser.add_argument('mode', nargs='?', default='reindex', choices=['reindex', 'increment', 'initial'])
+
+    args = parser.parse_args()
+
+    def parse_if_defined(maybe_date_str):
+        return datetime.strptime(maybe_date_str, '%Y-%m-%d').date() if maybe_date_str else None
+    min_date = parse_if_defined(args.min_date)
+    max_date = parse_if_defined(args.max_date)
+
+    archive = SlackArchive(args.root)
     elastic = Elastic()
+
+    if args.mode == 'reindex':
+        elastic.delete_index('slack')
+        elastic.create_index('slack')
+    elif args.mode == 'initial':
+        elastic.create_index('slack')
+
     #index_users(archive, elastic)
-    index_messages(archive, elastic)
+    index_messages(archive, elastic, min_date=min_date, max_date=max_date)
 
 main()
