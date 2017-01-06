@@ -135,7 +135,14 @@ export class ArchiveLog extends React.Component {
                   },
                 };
               }
-              return <SlackMessage {...item} full_user={user} channel={this.props.params.channel} key={i} />;
+              let collapse = false;
+              if (i > 0) {
+                const prevItem = this.state.log[i - 1];
+                if (item.user === prevItem.user && parseFloat(item.ts) - parseFloat(prevItem.ts) < 300) {
+                  collapse = true;
+                }
+              }
+              return <SlackMessage {...item} full_user={user} channel={this.props.params.channel} collapse={collapse} key={i} />;
             }
           )
         }

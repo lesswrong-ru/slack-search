@@ -84,7 +84,7 @@
 .slack-message {
   display: flex;
   flex-direction: row;
-  padding: 12px;
+  padding: 4px;
 }
 .slack-message:hover {
   background-color: #f9f9f9;
@@ -93,6 +93,12 @@
 .slack-message__aside {
   margin-left: 16px;
   margin-right: 10px;
+}
+.slack-message__aside .time {
+  visibility: hidden;
+}
+.slack-message:hover .slack-message__aside .time {
+  visibility: visible;
 }
 
 .slack-message__headline {
