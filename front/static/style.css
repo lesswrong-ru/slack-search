@@ -1,16 +1,8 @@
+* {
+  box-sizing: border-box;
+}
 #root {
   background-color: #f9f9f9;
-
-  /* breaks and hyphens - https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/ */
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  -ms-word-break: break-all;
-  word-break: break-all;
-  word-break: break-word;
-  -ms-hyphens: auto;
-  -moz-hyphens: auto;
-  -webkit-hyphens: auto;
-  hyphens: auto;
 }
 
 .sk-hits {
@@ -54,6 +46,19 @@
 
 .message-main {
   margin-left: 40px;
+}
+
+.message-text {
+  /* breaks and hyphens - https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/ */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
 }
 
 .slack-user {
@@ -103,8 +108,8 @@
 }
 
 .slack-message__aside {
-  margin-left: 16px;
-  margin-right: 10px;
+  min-width: 72px;
+  padding-left: 26px;
 }
 .slack-message__aside .time {
   visibility: hidden;
