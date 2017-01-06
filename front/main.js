@@ -8,11 +8,11 @@ import {
 } from 'searchkit';
 
 import { ArchiveChannelList, ArchiveChannelDates, ArchiveLog } from './archive';
-import SlackMessage from './components/SlackMessage';
+import SlackSnippet from './components/SlackSnippet';
 
 const searchkit = new SearchkitManager('/');
 
-const HitItem = props => <SlackMessage {...props.result._source} />;
+const HitItem = props => <SlackSnippet {...props.result._source} />;
 
 const SearchPage = () => (
   <SearchkitProvider searchkit={searchkit}>
