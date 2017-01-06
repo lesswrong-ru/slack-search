@@ -1,3 +1,4 @@
+import 'whatwg-fetch';
 import * as React from 'react';
 import SlackMessage from './components/SlackMessage';
 import SlackChannel from './components/SlackChannel';
