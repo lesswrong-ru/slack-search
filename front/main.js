@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { Router, Route, browserHistory } from 'react-router';
 
 import {
-  SearchkitManager, SearchkitProvider, SearchBox, Hits,
+  SearchkitManager, SearchkitProvider, SearchBox, Hits, Pagination,
   Layout, LayoutBody, TopBar, NoHits, LayoutResults, SideBar, SortingSelector
 } from 'searchkit';
 
@@ -35,6 +35,7 @@ const SearchPage = () => (
         itemComponent={HitItem}
           />
           <NoHits />
+          <Pagination showNumbers={true}/>
         </LayoutResults>
       </LayoutBody>
     </Layout>
