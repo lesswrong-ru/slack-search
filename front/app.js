@@ -18,7 +18,7 @@ app.get(
       path.join(archiveDir, req.params.channel),
       (err, files) => {
         res.send(
-          files.map(filename => filename.replace(RegExp('\.json$'), ''))
+          files ? files.map(filename => filename.replace(RegExp('\.json$'), '')) : []
         );
       }
     );
