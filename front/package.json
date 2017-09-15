@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "body-parser": "^1.18.1",
+    "express": "^4.15.4",
     "searchkit-express": "^0.2.1"
   },
   "devDependencies": {
