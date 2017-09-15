@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-app.use(express.static('static'));
+app.use(express.static('build'));
 
 const archiveDir = path.join(__dirname, '..', 'archive');
 
@@ -28,7 +28,7 @@ app.get(
 app.get(
   '/*',
   (req, res) => {
-    res.sendFile(`${__dirname}/static/index.html`);
+    res.sendFile(`${__dirname}/build/index.html`);
   }
 );
 
