@@ -1,0 +1,114 @@
+* {
+  box-sizing: border-box;
+}
+#root {
+  background-color: #f9f9f9;
+}
+
+a {
+  color: #0576B9;
+  text-decoration: none;
+}
+a:hover {
+  color: #005E99;
+  text-decoration: underline;
+}
+
+.sk-hits {
+  margin-left: 15px;
+}
+
+.slack-channel {
+  font-weight: bold;
+}
+.slack-channel a {
+  color: #333;
+  text-decoration: none;
+}
+.slack-channel a:hover {
+  text-decoration: underline;
+}
+
+.slack-user {
+  font-weight: bold;
+}
+.slack-user a {
+  text-decoration: none;
+  color: #333;
+}
+.slack-user a:hover {
+  text-decoration: underline;
+}
+
+.slack-archive {
+  margin: 0 auto;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /* copy-paste from .sk-layout styles */
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+
+}
+
+.slack-archive-page-title {
+  font-size: 40px;
+  line-height: 48px;
+  color: #666;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.slack-archive-messages {
+  background-color: white;
+  border: 1px solid #e8e8e8;
+  padding-bottom: 40px;
+}
+
+.slack-message {
+  display: flex;
+  flex-direction: row;
+  padding: 4px;
+}
+.slack-message:hover {
+  background-color: #f9f9f9;
+}
+
+.slack-message__aside {
+  min-width: 72px;
+  padding-left: 26px;
+}
+.slack-message__aside .time {
+  visibility: hidden;
+}
+.slack-message:hover .slack-message__aside .time {
+  visibility: visible;
+}
+
+.slack-message__headline {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+.slack-message__headline .slack-user {
+  margin-right: 8px;
+}
+
+.slack-upic img {
+  width: 36px;
+  height: 36px;
+  border-radius: 3px;
+}
+
+.time a {
+  font-weight: 200;
+  font-size: 0.75em;
+  line-height: 1.35em;
+  color: #9e9ea6;
+  text-decoration: none;
+}
+
+.time a:hover {
+  text-decoration: underline;
+}
