@@ -36,7 +36,7 @@ class SlackArchive:
     def users_dict(self):
         users = {}
         for user in self.users():
-            users[user['id']] = user['name']
+            users[user['id']] = user
 
         return users
 

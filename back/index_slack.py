@@ -101,9 +101,8 @@ def index_messages(archive, elastic, min_date=None, max_date=None):
         if 'user' not in message:
             continue
 
-        doc_id = message['user'] + '_' + message['ts']
-        user_id = message['user']
-        message['user'] = users.get(user_id, 'UNKNOWN')
+        doc_id = message['channel'] + '_' + message['ts']
+        message['username'] = users.get(message['user'], {}).get('name', 'UNKNOWN')
         message['millits'] = int(float(message['ts']) * 1000) # milliseconds since epoch
 
         elastic.bulk_push(

@@ -54,7 +54,7 @@ def process_message(message, users, stat):
         if user_id != 'USLACKBOT':
             print('{} not found'.format(user_id))
         return
-    author = users[user_id]
+    author = users[user_id]['name']
 
     if 'reactions' in message:
         for reaction in message['reactions']:
@@ -80,8 +80,11 @@ def find_offenders(archive, min_date=None, max_date=None):
             prev_message = message
             continue
 
-        user = users.get(message['user'], 'UNKNOWN')
+        user = users.get(message['user'], {}).get('name', 'UNKNOWN')
         total_stats[user] += 1
+
+        if message['text'] == None:
+            continue # weird message, skip
         total_message_length[user] += len(message['text'])
 
         if message['user'] == prev_message['user'] and float(message['ts']) - float(prev_message['ts']) < 30:
