@@ -6,7 +6,8 @@ import { MainStore } from './store';
 
 import {
   SearchkitManager, SearchkitProvider, SearchBox, Hits, Pagination,
-  Layout, LayoutBody, TopBar, NoHits, LayoutResults, SideBar, SortingSelector
+  Layout, LayoutBody, TopBar, NoHits, LayoutResults, SideBar, SortingSelector, HitsStats,
+  QueryString
 } from 'searchkit';
 
 import { ArchiveChannelList, ArchiveChannelDates, ArchiveLog } from './archive';
@@ -27,6 +28,7 @@ const SearchPage = () => (
       <TopBar>
         <SearchBox
           searchOnChange={true}
+          queryBuilder={QueryString}
         />
       </TopBar>
       <LayoutBody>
@@ -37,6 +39,7 @@ const SearchPage = () => (
           ]} />
         </SideBar>
         <LayoutResults>
+          <div style={{marginLeft: 10}}><HitsStats /></div>
           <Hits
         hitsPerPage={50}
         itemComponent={HitItem}
