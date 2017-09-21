@@ -66,34 +66,6 @@ a:hover {
   padding-bottom: 40px;
 }
 
-.slack-message {
-  display: flex;
-  flex-direction: row;
-  padding: 4px;
-}
-.slack-message:hover {
-  background-color: #f9f9f9;
-}
-
-.slack-message__aside {
-  min-width: 72px;
-  padding-left: 26px;
-}
-.slack-message__aside .time {
-  visibility: hidden;
-}
-.slack-message:hover .slack-message__aside .time {
-  visibility: visible;
-}
-
-.slack-message__headline {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-}
-.slack-message__headline .slack-user {
-  margin-right: 8px;
-}
 
 .slack-upic img {
   width: 36px;

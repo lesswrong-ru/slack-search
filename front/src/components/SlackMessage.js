@@ -7,6 +7,8 @@ import SlackUser from './SlackUser';
 import SlackUserMention from './SlackUserMention';
 import SlackUpic from './SlackUpic';
 
+import './SlackMessage.css';
+
 import { observer, inject } from 'mobx-react';
 
 const SLACK_SERVER = 'lesswrongru';
@@ -108,7 +110,7 @@ const SlackMessage = inject("store")(observer(
           <div className="slack-message__main">
             {headlineEl}
 
-            <div className="message-text">
+            <div className="slack-message-text">
               {this.renderText()}
             </div>
           </div>
