@@ -33,7 +33,7 @@ class Stat:
         for e in self.top_users(emoji, n):
             print('@{}\t{}'.format(e['user'], e['count']))
 
-    def print(self):
+    def print_all(self):
         self.print_top('+1', 10)
         self.print_top('-1', 10)
         self.print_top('heavy_plus_sign', 10)
@@ -131,9 +131,12 @@ def main():
             process_message(message, users, stat)
 
         print()
-        stat.print()
+        stat.print_all()
 
     elif args.mode == 'offenders':
         find_offenders(archive, max_date=max_date, min_date=min_date)
+
+    elif args.mode == 'top_posters':
+        find_top_posters(archive, max_date=max_date, min_date=min_date)
 
 main()
