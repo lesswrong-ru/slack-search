@@ -105,13 +105,34 @@ def find_offenders(archive, min_date=None, max_date=None):
             )
         )
 
+def find_top_posters(archive, min_date=None, max_date=None):
+    users = archive.users_dict()
+    dup_stats = defaultdict(int)
+    total_stats = defaultdict(int)
+    total_message_length = defaultdict(int)
+
+    prev_message = None
+    for message in archive.traverse(min_date=min_date, max_date=max_date):
+        if message['type'] != 'message' or not 'user' in message:
+            continue
+
+        if not prev_message:
+            prev_message = message
+            continue
+
+        user = users.get(message['user'], {}).get('name', 'UNKNOWN')
+        total_stats[user] += 1
+
+    for key in sorted(total_stats, key=total_stats.get):
+        print("%s: %s" % (key, total_stats[key]))
+
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--min-date')
     parser.add_argument('--max-date')
     parser.add_argument('root')
-    parser.add_argument('mode', nargs='?', default='emoji', choices=['emoji', 'offenders'])
+    parser.add_argument('mode', nargs='?', default='emoji', choices=['emoji', 'offenders', 'top_posters'])
 
     args = parser.parse_args()
 
