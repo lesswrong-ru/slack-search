@@ -47,8 +47,8 @@ def snippet(text):
     return result
 
 def process_program(program, suffrage_data, sc):
-    user = suffrage_data[program['user']]
-    print(colored(user.name, 'red'), '\t', snippet(program['text']))
+    candidate = suffrage_data[program['user']]
+    print(colored(candidate.name, 'red'), '\t', snippet(program['text']))
 
     score = 0
     for reaction in program.get('reactions', []):
@@ -66,10 +66,14 @@ def process_program(program, suffrage_data, sc):
                 )
                 voter = VotingUser(id=voter_id, name=voter_from_api['user']['name'], suffrage='newbie')
 
+            if voter.id == candidate.id:
+                voter.suffrage = 'self'
+
             voter_colors = {
                 True: 'green',
                 False: 'red',
                 'newbie': 'white',
+                'self': 'white',
             }
 
             voters.append(voter)
@@ -96,7 +100,7 @@ def process_program(program, suffrage_data, sc):
     print(colored(score, color='green', attrs=['bold']))
     print()
 
-    return (user.name, score)
+    return (candidate.name, score)
 
 def process_all_programs(programs, suffrage_data, sc):
     user2score = {}
