@@ -15,7 +15,7 @@ class Stat:
     def add_emoji(self, target, emoji):
         self.emoji[target][emoji] += 1
 
-    def top_users(self, emoji, n):
+    def top_emoji_receivers(self, emoji, n):
         top = []
         for user in self.emoji.keys():
             top.append({
@@ -30,7 +30,7 @@ class Stat:
         print()
         print(colored('*Top {} :{}:*'.format(n, emoji), 'red'))
 
-        for e in self.top_users(emoji, n):
+        for e in self.top_emoji_receivers(emoji, n):
             print('@{}\t{}'.format(e['user'], e['count']))
 
     def print_all(self):
@@ -111,13 +111,8 @@ def find_top_posters(archive, min_date=None, max_date=None):
     total_stats = defaultdict(int)
     total_message_length = defaultdict(int)
 
-    prev_message = None
     for message in archive.traverse(min_date=min_date, max_date=max_date):
         if message['type'] != 'message' or not 'user' in message:
-            continue
-
-        if not prev_message:
-            prev_message = message
             continue
 
         user = users.get(message['user'], {}).get('name', 'UNKNOWN')
