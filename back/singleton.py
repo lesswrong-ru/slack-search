@@ -67,7 +67,7 @@ def process_program(program, suffrage_data, sc):
                 voter = VotingUser(id=voter_id, name=voter_from_api['user']['name'], suffrage='newbie')
 
             if voter.id == candidate.id:
-                voter.suffrage = 'self'
+                voter = VotingUser(id=voter.id, name=voter.name, suffrage='self')
 
             voter_colors = {
                 True: 'green',
@@ -155,4 +155,5 @@ def main():
 
     process_all_programs(programs, suffrage_data, sc)
 
-main()
+if __name__ == '__main__':
+    main()
