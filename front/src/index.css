@@ -60,6 +60,20 @@ a:hover {
   margin-bottom: 30px;
 }
 
+.slack-archive-date {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.slack-archive-date a {
+  color: #666;
+}
+.slack-archive-date a:hover {
+  text-decoration: none;
+  color: #333;
+}
+
 .slack-archive-messages {
   background-color: white;
   border: 1px solid #e8e8e8;

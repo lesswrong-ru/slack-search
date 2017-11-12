@@ -68,6 +68,17 @@ export class ArchiveChannelDates extends React.Component {
 }
 
 
+async function findPrevNextDate(channel, date) {
+  const response = await fetch(`/archive-data/${channel}/dates`)
+  const dates = await response.json();
+
+  const index = dates.findIndex(d => d === date);
+
+  const dateByIndex = (i) => (0 <= i && i < dates.length) ? dates[i] : null;
+  return [dateByIndex(index - 1), dateByIndex(index + 1)];
+}
+
+
 export const ArchiveLog = inject("store")(observer(
   class ArchiveLog extends React.Component {
     state = {
@@ -75,21 +86,45 @@ export const ArchiveLog = inject("store")(observer(
     };
 
     async componentWillMount() {
-      const response = await fetch(`/archive-data/${this.props.match.params.channel}/${this.props.match.params.date}.json`);
+      const response = await fetch(`/archive-data/${this.channel()}/${this.date()}.json`);
       const json = await response.json();
 
       this.setState({
         log: json,
       });
+      await this.addPrevNextLinks();
+    }
+
+    async addPrevNextLinks() {
+      const [prevDate, nextDate] = await findPrevNextDate(this.channel(), this.date());
+      this.setState({
+        prevDate, nextDate
+      });
+    }
+
+    channel() {
+      return this.props.match.params.channel;
+    }
+    date() {
+      return this.props.match.params.date;
+    }
+
+    renderDate() {
+      return (
+        <div className="slack-archive-date">
+        <div>{this.state.prevDate ? <a href={`/archive/${this.channel()}/${this.state.prevDate}`}>←</a> : null}</div>
+        <div>{this.date()}</div>
+        <div>{this.state.nextDate ? <a href={`/archive/${this.channel()}/${this.state.nextDate}`}>→</a> : null}</div>
+        </div>
+      );
     }
 
     render() {
-      //console.log('render archive log');
       return (
         <div className="slack-archive">
         <header className="slack-archive-page-title">
-        <SlackChannel name={this.props.match.params.channel} />
-        <div>{this.props.match.params.date}</div>
+        <SlackChannel name={this.channel()} />
+        {this.renderDate()}
         </header>
         <div className="slack-archive-messages">
         {
