@@ -130,6 +130,8 @@ def main():
 
     sc = SlackClient(os.environ["SLACK_API_TOKEN"])
 
+    print(datetime.combine(elections_start_date, datetime.min.time()))
+
     response = sc.api_call(
         "channels.history",
         channel="C737YGU8L",
