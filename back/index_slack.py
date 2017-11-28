@@ -97,8 +97,9 @@ def index_users(archive, elastic):
 
 def index_messages(archive, elastic, min_date=None, max_date=None):
     users = archive.users_dict()
+    users_banned_from_index = set()
     for message in archive.traverse(min_date=min_date, max_date=max_date):
-        if 'user' not in message:
+        if 'user' not in message or message['user'] in users_banned_from_index:
             continue
 
         doc_id = message['channel'] + '_' + message['ts']
