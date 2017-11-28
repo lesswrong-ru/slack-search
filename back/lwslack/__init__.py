@@ -3,6 +3,7 @@ import json
 import os.path
 import os
 import sys
+import tqdm
 
 
 class SlackLog:
@@ -52,7 +53,7 @@ class SlackArchive:
     def channel_logs(self, channel_name):
         directory = self.root + '/' + channel_name
 
-        for filename in os.listdir(directory):
+        for filename in tqdm.tqdm(os.listdir(directory)):
             full_name = os.path.join(directory, filename)
             if not os.path.isfile(full_name):
                 continue
@@ -61,6 +62,8 @@ class SlackArchive:
     def traverse(self, min_date=None, max_date=None):
         for channel_name in self.channel_names():
             print('processing channel ' + channel_name, file=sys.stderr)
+            if channel_name in ("drugs", "drugz"):
+                continue
             for log in self.channel_logs(channel_name):
                 if (min_date and log.date() < min_date) or (max_date and log.date() > max_date):
                     continue
