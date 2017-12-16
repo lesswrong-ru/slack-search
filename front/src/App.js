@@ -66,7 +66,7 @@ const App = observer(class App extends React.Component {
     return (
       <Provider store={this.state.store}>
         <BrowserRouter>
-          <div>
+          <div class="slack-root">
             <Route exact path="/" component={SearchPage} />
             <Route exact path="/archive" component={ArchiveChannelList} />
             <Route exact path="/archive/:channel" component={ArchiveChannelDates} />

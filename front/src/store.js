@@ -3,17 +3,19 @@ import { observable } from 'mobx';
 export class MainStore {
   users = observable.map({});
 
-  async fetchUsers() {
-    console.log('fetching users');
-    const usersJson = await (await fetch('/archive-data/users.json')).json();
+  async setUsers(usersList) {
     const usersDict = {};
-    usersJson.forEach(
+    usersList.forEach(
       user => {
         usersDict[user.id] = user;
       }
     );
-    console.log('updating users');
     this.users.replace(usersDict);
+  }
+
+  async fetchUsers() {
+    const usersJson = await (await fetch('/archive-data/users.json')).json();
+    this.setUsers(usersJson);
   }
 
   getUser(user_id) {
