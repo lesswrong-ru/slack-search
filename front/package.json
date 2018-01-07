@@ -3,21 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@storybook/react": "^3.2.17",
+    "babel-cli": "^6.26.0",
     "body-parser": "^1.18.1",
-    "express": "^4.15.4",
+    "express": "^4.16.2",
+    "nearley": "^2.11.0",
     "searchkit-express": "^0.2.1"
   },
   "devDependencies": {
-    "mobx": "^3.2.2",
-    "mobx-react": "^4.2.2",
-    "moment": "^2.18.1",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
+    "mobx": "^3.4.1",
+    "mobx-react": "^4.3.5",
+    "moment": "^2.19.4",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.13",
-    "searchkit": "^2.2.1-0",
-    "@kadira/storybook": "^2.21.0"
+    "react-scripts": "1.0.17",
+    "searchkit": "^2.2.1-0"
   },
   "scripts": {
     "start": "react-scripts start",

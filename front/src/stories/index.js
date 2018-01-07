@@ -1,5 +1,5 @@
 import React from 'react';
-import { storiesOf, action, linkTo } from '@kadira/storybook';
+import { storiesOf, action, linkTo } from '@storybook/react';
 
 import { Provider } from 'mobx-react';
 import { MainStore } from '../store';
@@ -79,7 +79,7 @@ const wrapper = story => {
     <Provider store={store}>
       <div className="slack-root">
         <div className="slack-archive" style={{paddingTop: 20, paddingBottom: 20}}>
-          <div className="slack-archive-messages">
+          <div className="slack-archive-messages" style={{minWidth: 600}}>
           {story()}
           </div>
         </div>
@@ -87,19 +87,6 @@ const wrapper = story => {
     </Provider>
   );
 };
-
-storiesOf('Welcome', module)
-  .add('to Storybook', () => (
-    <Welcome showApp={linkTo('Button')}/>
-  ));
-
-storiesOf('Button', module)
-  .add('with text', () => (
-    <Button onClick={action('clicked')}>Hello Button</Button>
-  ))
-  .add('with some emoji', () => (
-    <Button onClick={action('clicked')}>😀 😎 👍 💯</Button>
-  ));
 
 storiesOf('Inline elements', module)
   .addDecorator(wrapper)
@@ -122,4 +109,10 @@ storiesOf('Block elements', module)
   ))
   .add('message', () => (
     <SlackMessage message={messageFixture} />
+  ))
+  .add('message with emphasis', () => (
+    <SlackMessage message={Object.assign({}, messageFixture, {'text': 'something _something_ something'})} />
+  ))
+  .add('message with bold', () => (
+    <SlackMessage message={Object.assign({}, messageFixture, {'text': 'something *something* something'})} />
   ))
