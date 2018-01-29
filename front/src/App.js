@@ -5,9 +5,20 @@ import { observer, inject, Provider } from 'mobx-react';
 import { MainStore } from './store';
 
 import {
-  SearchkitManager, SearchkitProvider, SearchBox, Hits, Pagination,
-  Layout, LayoutBody, TopBar, NoHits, LayoutResults, SideBar, SortingSelector, HitsStats,
-  QueryString
+  SearchkitManager,
+  SearchkitProvider,
+  SearchBox,
+  Hits,
+  Pagination,
+  Layout,
+  LayoutBody,
+  TopBar,
+  NoHits,
+  LayoutResults,
+  SideBar,
+  SortingSelector,
+  HitsStats,
+  QueryString,
 } from 'searchkit';
 
 import { ArchiveChannelList, ArchiveChannelDates, ArchiveLog } from './archive';
@@ -16,11 +27,9 @@ import SlackMessage from './components/SlackMessage';
 
 const searchkit = new SearchkitManager('/');
 
-const HitItem = inject("store")(observer(
-  (props) => (
-    <SlackSnippet message={props.result._source} />
-  )
-));
+const HitItem = inject('store')(
+  observer(props => <SlackSnippet message={props.result._source} />)
+);
 
 const SearchPage = () => (
   <SearchkitProvider searchkit={searchkit}>
@@ -33,49 +42,64 @@ const SearchPage = () => (
       </TopBar>
       <LayoutBody>
         <SideBar>
-          <SortingSelector options={[
-            {label: 'Latest', field: 'millits', order: 'desc', defaultOption: true},
-            {label: 'Relevance', field: '_score', order: 'desc'},
-          ]} />
+          <SortingSelector
+            options={[
+              {
+                label: 'Latest',
+                field: 'millits',
+                order: 'desc',
+                defaultOption: true,
+              },
+              { label: 'Relevance', field: '_score', order: 'desc' },
+            ]}
+          />
         </SideBar>
         <LayoutResults>
-          <div style={{marginLeft: 10}}><HitsStats /></div>
-          <Hits
-        hitsPerPage={50}
-        itemComponent={HitItem}
-          />
+          <div style={{ marginLeft: 10 }}>
+            <HitsStats />
+          </div>
+          <Hits hitsPerPage={50} itemComponent={HitItem} />
           <NoHits />
-          <Pagination showNumbers={true}/>
+          <Pagination showNumbers={true} />
         </LayoutResults>
       </LayoutBody>
     </Layout>
   </SearchkitProvider>
 );
 
+const App = observer(
+  class App extends React.Component {
+    state = {
+      store: new MainStore(),
+    };
 
-const App = observer(class App extends React.Component {
-  state = {
-    store: new MainStore(),
-  };
+    async componentWillMount() {
+      await this.state.store.fetchUsers();
+    }
 
-  async componentWillMount() {
-    await this.state.store.fetchUsers();
+    render() {
+      return (
+        <Provider store={this.state.store}>
+          <BrowserRouter>
+            <div class="slack-root">
+              <Route exact path="/" component={SearchPage} />
+              <Route exact path="/archive" component={ArchiveChannelList} />
+              <Route
+                exact
+                path="/archive/:channel"
+                component={ArchiveChannelDates}
+              />
+              <Route
+                exact
+                path="/archive/:channel/:date"
+                component={ArchiveLog}
+              />
+            </div>
+          </BrowserRouter>
+        </Provider>
+      );
+    }
   }
-
-  render() {
-    return (
-      <Provider store={this.state.store}>
-        <BrowserRouter>
-          <div class="slack-root">
-            <Route exact path="/" component={SearchPage} />
-            <Route exact path="/archive" component={ArchiveChannelList} />
-            <Route exact path="/archive/:channel" component={ArchiveChannelDates} />
-            <Route exact path="/archive/:channel/:date" component={ArchiveLog} />
-          </div>
-        </BrowserRouter>
-      </Provider>
-    );
-  }
-});
+);
 
 export default App;
