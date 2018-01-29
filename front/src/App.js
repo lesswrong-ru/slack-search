@@ -38,6 +38,7 @@ const SearchPage = () => (
         <SearchBox
           searchOnChange={true}
           queryBuilder={QueryString}
+          queryOptions={{ default_operator: 'AND' }}
         />
       </TopBar>
       <LayoutBody>
