@@ -12,7 +12,7 @@ const archiveDir = path.join(__dirname, '..', 'archive');
 app.use('/archive-data', express.static(archiveDir));
 
 app.get(
-  '/archive-data/:channel/dates',
+  '/archive-data/:channel([\w-]+)/dates',
   (req, res) => {
     fs.readdir(
       path.join(archiveDir, req.params.channel),

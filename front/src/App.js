@@ -23,7 +23,6 @@ import {
 
 import { ArchiveChannelList, ArchiveChannelDates, ArchiveLog } from './archive';
 import SlackSnippet from './components/SlackSnippet';
-import SlackMessage from './components/SlackMessage';
 
 const searchkit = new SearchkitManager('/');
 
