@@ -20,6 +20,7 @@ import {
   HitsStats,
   QueryString,
   InputFilter,
+  RefinementListFilter,
 } from 'searchkit';
 
 import { ArchiveChannelList, ArchiveChannelDates, ArchiveLog } from './archive';
@@ -65,6 +66,7 @@ const SearchPage = () => (
               ]}
             />
           </NoHide>
+          <RefinementListFilter id="ch" title="Channel" field="channel" />
         </SideBar>
         <LayoutResults>
           <div style={{ marginLeft: 10 }}>
