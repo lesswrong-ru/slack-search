@@ -25,7 +25,7 @@ class Elastic:
             '{}/{}'.format(self.endpoint, index),
             json={
                 'mappings': {
-                    'message': {
+                    '_doc': {
                         'properties': {
                             'millits': {
                                 'type': 'date',
@@ -44,12 +44,11 @@ class Elastic:
             }
         ).raise_for_status()
 
-    def add(self, index, doc_type, doc_id, content):
+    def add(self, index, doc_id, content):
         r = requests.put(
-            '{endpoint}/{index}/{type}/{id}'.format(
+            '{endpoint}/{index}/_doc/{id}'.format(
                 endpoint=self.endpoint,
                 index=index,
-                type=doc_type,
                 id=doc_id
             ),
             json=content
@@ -60,9 +59,9 @@ class Elastic:
             print(content)
         r.raise_for_status()
 
-    def bulk_push(self, index, doc_type, doc_id, content):
+    def bulk_push(self, index, doc_id, content):
         self._bulk_buffer.append(
-            (index, doc_type, doc_id, content)
+            (index, doc_id, content)
         )
         if len(self._bulk_buffer) >= 100:
             self.bulk_commit()
@@ -77,12 +76,12 @@ class Elastic:
                 json.dumps({
                     'index': {
                         '_index': item[0],
-                        '_type': item[1],
-                        '_id': item[2],
+                        '_type': '_doc',
+                        '_id': item[1],
                     }
                 }) + '\n'
                 + json.dumps(
-                    item[3]
+                    item[2]
                 ) + '\n'
                 for item in self._bulk_buffer
             ])
@@ -90,9 +89,11 @@ class Elastic:
         self._bulk_buffer = []
 
 
+INDEX = 'slack.messages'
+
 def index_users(archive, elastic):
     for user in archive.users():
-        elastic.add('slack', 'user', user['id'], user)
+        elastic.add(INDEX, user['id'], user)
 
 
 def index_messages(archive, elastic, min_date=None, max_date=None):
@@ -107,8 +108,7 @@ def index_messages(archive, elastic, min_date=None, max_date=None):
         message['millits'] = int(float(message['ts']) * 1000) # milliseconds since epoch
 
         elastic.bulk_push(
-            'slack',
-            'message',
+            INDEX,
             doc_id,
             message
         )
@@ -133,10 +133,10 @@ def main():
     elastic = Elastic()
 
     if args.mode == 'reindex':
-        elastic.delete_index('slack')
-        elastic.create_index('slack')
+        elastic.delete_index(INDEX)
+        elastic.create_index(INDEX)
     elif args.mode == 'initial':
-        elastic.create_index('slack')
+        elastic.create_index(INDEX)
 
     #index_users(archive, elastic)
     index_messages(archive, elastic, min_date=min_date, max_date=max_date)
