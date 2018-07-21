@@ -35,7 +35,7 @@ app.get(
 app.use(bodyParser.json());
 SearchkitExpress({
   host: process.env.ELASTIC_URL || 'http://localhost:9200',
-  index: 'slack',
+  index: 'slack.messages',
   queryProcessor: function(query, req, res) {
     // do neccessery permissions, prefilters to query object
     // then return it
