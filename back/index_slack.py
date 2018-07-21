@@ -187,6 +187,7 @@ def main():
 
     if args.mode == 'initial':
         index = INDEX_SLOTS[0]
+        elastic.create_index(index)
         elastic.create_alias(ALIAS, index)
     elif args.mode == 'reindex':
         used_indices = elastic.alias_targets()
@@ -198,8 +199,8 @@ def main():
             )
         ), 'green')
 
-    if elastic.exists_index(index):
-        elastic.delete_index(index)
+        if elastic.exists_index(index):
+            elastic.delete_index(index)
 
     elastic.create_index(index)
 
