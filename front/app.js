@@ -9,10 +9,10 @@ app.use(express.static('build'));
 
 const archiveDir = path.join(__dirname, '..', 'archive');
 
-app.use('/archive-data', express.static(archiveDir));
+app.use('/api/archive', express.static(archiveDir));
 
 app.get(
-  '/archive-data/:channel([\w-]+)/dates',
+  '/api/channel-dates/:channel([\\w\\-]+)',
   (req, res) => {
     fs.readdir(
       path.join(archiveDir, req.params.channel),
@@ -33,7 +33,7 @@ app.get(
 );
 
 app.use(bodyParser.json());
-SearchkitExpress({
+const searchkitRouter = SearchkitExpress.createRouter({
   host: process.env.ELASTIC_URL || 'http://localhost:9200',
   index: 'slack.messages',
   queryProcessor: function(query, req, res) {
@@ -41,7 +41,8 @@ SearchkitExpress({
     // then return it
     return query;
   },
-}, app);
+});
+app.use("/api/search", searchkitRouter);
 
 app.listen(8000, 'localhost', () => {
   console.log('Slack search is listening!');

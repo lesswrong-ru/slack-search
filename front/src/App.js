@@ -24,7 +24,7 @@ import {
 import { ArchiveChannelList, ArchiveChannelDates, ArchiveLog } from './archive';
 import SlackSnippet from './components/SlackSnippet';
 
-const searchkit = new SearchkitManager('/');
+const searchkit = new SearchkitManager('/api/search');
 
 const HitItem = inject('store')(
   observer(props => <SlackSnippet message={props.result._source} />)
@@ -38,6 +38,7 @@ const SearchPage = () => (
           searchOnChange={true}
           queryBuilder={QueryString}
           queryOptions={{ default_operator: 'AND' }}
+          queryFields={['text']}
         />
       </TopBar>
       <LayoutBody>

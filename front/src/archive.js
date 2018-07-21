@@ -10,7 +10,7 @@ export class ArchiveChannelList extends React.Component {
   };
 
   async componentWillMount() {
-    const response = await fetch('/archive-data/channels.json');
+    const response = await fetch('/api/archive/channels.json');
     const json = await response.json();
     this.setState({ channels: json });
   }
@@ -40,7 +40,7 @@ export class ArchiveChannelDates extends React.Component {
   };
 
   async componentWillMount() {
-    const response = await fetch(`/archive-data/${this.props.match.params.channel}/dates`)
+    const response = await fetch(`/api/channel-dates/${this.props.match.params.channel}`)
     const json = await response.json();
     this.setState({ dates: json });
   }
@@ -69,7 +69,7 @@ export class ArchiveChannelDates extends React.Component {
 
 
 async function findPrevNextDate(channel, date) {
-  const response = await fetch(`/archive-data/${channel}/dates`)
+  const response = await fetch(`/api/channel-dates/${channel}`)
   const dates = await response.json();
 
   const index = dates.findIndex(d => d === date);
@@ -86,7 +86,7 @@ export const ArchiveLog = inject("store")(observer(
     };
 
     async componentWillMount() {
-      const response = await fetch(`/archive-data/${this.channel()}/${this.date()}.json`);
+      const response = await fetch(`/api/archive/${this.channel()}/${this.date()}.json`);
       const json = await response.json();
 
       this.setState({

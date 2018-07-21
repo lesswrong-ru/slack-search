@@ -14,7 +14,7 @@ export class MainStore {
   }
 
   async fetchUsers() {
-    const usersJson = await (await fetch('/archive-data/users.json')).json();
+    const usersJson = await (await fetch('/api/archive/users.json')).json();
     this.setUsers(usersJson);
   }
 
