@@ -1,1 +1,2 @@
 ES_JAVA_OPTS="-Xms256m -Xmx256m"
+ES_PATH_CONF="./config/elasticsearch.yml"
