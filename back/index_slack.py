@@ -15,22 +15,22 @@ class Elastic:
 
     def exists_index(self, index):
         code = requests.head(
-            f'{self.endpoint}/{index}'
+            '{}/{}'.format(self.endpoint, index)
         ).status_code
         if code == 404:
             return False
         if code == 200:
             return True
-        raise Exception(f"Error while checking if {index} exists")
+        raise Exception("Error while checking if {} exists".format(index))
 
     def delete_index(self, index):
-        print(colored(f'Deleting index {index}', 'red'))
+        print(colored('Deleting index {}'.format(index), 'red'))
         requests.delete(
             '{}/{}'.format(self.endpoint, index)
         ).raise_for_status()
 
     def create_index(self, index):
-        print(colored(f'Creating index {index}', 'green'))
+        print(colored('Creating index {}'.format(index), 'green'))
         requests.put(
             '{}/{}'.format(self.endpoint, index),
             json={
@@ -64,12 +64,12 @@ class Elastic:
     def create_alias(self, alias, index):
         print(colored('Creating alias {alias} for {index}', 'green'))
         requests.put(
-            f'{self.endpoint}/{index}/_alias/{alias}'
+            '{}/{}/_alias/{}'.format(self.endpoint, index, alias)
         ).raise_for_status()
 
     def alias_targets(self, alias):
         r = requests.get(
-            f'{self.endpoint}/*/_alias/{alias}'
+            '{}/*/_alias/{}'.format(self.endpoint, alias)
         )
         r.raise_for_status()
         data = r.json()
@@ -88,7 +88,7 @@ class Elastic:
 
         print(colored('Redirecting alias {alias} to {index}', 'green'))
         requests.post(
-            f'{self.endpoint}/_aliases',
+            '{}/_aliases'.format(self.endpoint),
             json={'actions': actions}
         ).raise_for_status()
 
@@ -174,7 +174,7 @@ def main():
 
     args = parser.parse_args()
 
-    INDEX_SLOTS = [f'slack.messages.{i}' for i in range(1,3)]
+    INDEX_SLOTS = ['slack.messages.{}'.format(i) for i in range(1,3)]
     ALIAS = 'slack.messages'
 
     def parse_if_defined(maybe_date_str):
@@ -191,7 +191,12 @@ def main():
     elif args.mode == 'reindex':
         used_indices = elastic.alias_targets()
         index = next(slot for slot in INDEX_SLOTS if slot not in used_indices)
-        print(colored(f'{",".join(used_indices)} is used, indexing to {index}'), 'green')
+        print(colored(
+            '{} is used, indexing to {}'.format(
+                ",".join(used_indices),
+                index
+            )
+        ), 'green')
 
     if elastic.exists_index(index):
         elastic.delete_index(index)
