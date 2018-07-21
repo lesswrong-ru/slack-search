@@ -70,8 +70,11 @@ class Elastic:
         if not self._bulk_buffer:
             return
 
-        requests.post(
+        r = requests.post(
             '{}/_bulk'.format(self.endpoint),
+            headers={
+                'Content-Type': 'application/x-ndjson',
+            },
             data=''.join([
                 json.dumps({
                     'index': {
@@ -85,7 +88,8 @@ class Elastic:
                 ) + '\n'
                 for item in self._bulk_buffer
             ])
-        ).raise_for_status()
+        )
+        r.raise_for_status()
         self._bulk_buffer = []
 
 
