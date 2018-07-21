@@ -98,3 +98,7 @@ a:hover {
 .time a:hover {
   text-decoration: underline;
 }
+
+.no-hide-fix .is-disabled {
+  display: block !important;
+}

@@ -19,6 +19,7 @@ import {
   SortingSelector,
   HitsStats,
   QueryString,
+  InputFilter,
 } from 'searchkit';
 
 import { ArchiveChannelList, ArchiveChannelDates, ArchiveLog } from './archive';
@@ -28,6 +29,12 @@ const searchkit = new SearchkitManager('/api/search');
 
 const HitItem = inject('store')(
   observer(props => <SlackSnippet message={props.result._source} />)
+);
+
+const NoHide = ({ children }) => (
+  <div className="no-hide-fix">
+    {children}
+  </div>
 );
 
 const SearchPage = () => (
@@ -43,17 +50,21 @@ const SearchPage = () => (
       </TopBar>
       <LayoutBody>
         <SideBar>
-          <SortingSelector
-            options={[
-              {
-                label: 'Latest',
-                field: 'millits',
-                order: 'desc',
-                defaultOption: true,
-              },
-              { label: 'Relevance', field: '_score', order: 'desc' },
-            ]}
-          />
+          <NoHide>
+            <InputFilter id="username" title="Username" searchOnChange={true} queryFields={["username"]} />
+            <InputFilter id="channel" title="Channel" searchOnChange={true} queryFields={["channel"]} />
+            <SortingSelector
+              options={[
+                {
+                  label: 'Latest',
+                  field: 'millits',
+                  order: 'desc',
+                  defaultOption: true,
+                },
+                { label: 'Relevance', field: '_score', order: 'desc' },
+              ]}
+            />
+          </NoHide>
         </SideBar>
         <LayoutResults>
           <div style={{ marginLeft: 10 }}>
