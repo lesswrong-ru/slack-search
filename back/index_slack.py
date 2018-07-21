@@ -174,8 +174,8 @@ def main():
 
     args = parser.parse_args()
 
-    INDEX_SLOTS = ['slack.messages.{}'.format(i) for i in range(1,3)]
     ALIAS = 'slack.messages'
+    INDEX_SLOTS = ['{}.{}'.format(ALIAS, i) for i in range(1,3)]
 
     def parse_if_defined(maybe_date_str):
         return datetime.strptime(maybe_date_str, '%Y-%m-%d').date() if maybe_date_str else None
@@ -190,7 +190,7 @@ def main():
         elastic.create_index(index)
         elastic.create_alias(ALIAS, index)
     elif args.mode == 'reindex':
-        used_indices = elastic.alias_targets()
+        used_indices = elastic.alias_targets(ALIAS)
         index = next(slot for slot in INDEX_SLOTS if slot not in used_indices)
         print(colored(
             '{} is used, indexing to {}'.format(
@@ -202,10 +202,10 @@ def main():
         if elastic.exists_index(index):
             elastic.delete_index(index)
 
-    elastic.create_index(index)
+        elastic.create_index(index)
 
     index_messages(archive, elastic, index, min_date=min_date, max_date=max_date)
 
-    elastic.switch_alias(alias, index)
+    elastic.switch_alias(ALIAS, index)
 
 main()
