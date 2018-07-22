@@ -196,13 +196,16 @@ def main():
             '{} is used, indexing to {}'.format(
                 ",".join(used_indices),
                 index
-            )
-        ), 'green')
+            ),
+            'green'
+        ))
 
         if elastic.exists_index(index):
             elastic.delete_index(index)
 
         elastic.create_index(index)
+    else:
+        raise Exception("Wrong mode " + args.mode)
 
     index_messages(archive, elastic, index, min_date=min_date, max_date=max_date)
 
