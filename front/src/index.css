@@ -1,8 +1,13 @@
-.slack-root {
+@import url('https://fonts.googleapis.com/css?family=Lato:400,400i,700,900,900i');
+
+.slack-root, .slack-root .sk-layout {
   background-color: #f4f4f4;
 
-  /* copy-paste from .sk-layout styles */
-  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+  font-family: 'Lato', sans-serif;
+  font-variant-ligatures: common-ligatures;
+
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
 }
 .slack-root * {
   box-sizing: border-box;
@@ -33,11 +38,11 @@ a:hover {
 }
 
 .slack-user {
-  font-weight: bold;
+  font-weight: 900;
 }
 .slack-user a {
   text-decoration: none;
-  color: #333;
+  color: #2c2d30;
 }
 .slack-user a:hover {
   text-decoration: underline;
@@ -88,10 +93,9 @@ a:hover {
 }
 
 .time a {
-  font-weight: 200;
-  font-size: 0.75em;
+  font-size: 12px;
   line-height: 1.35em;
-  color: #9e9ea6;
+  color: #717274;
   text-decoration: none;
 }
 

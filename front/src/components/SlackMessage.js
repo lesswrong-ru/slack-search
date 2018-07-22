@@ -1,69 +1,19 @@
 import * as React from 'react';
+import { observer, inject } from 'mobx-react';
+
 import moment from 'moment';
 
-import SlackChannelMention from './SlackChannelMention';
 import SlackUser from './SlackUser';
-import SlackUserMention from './SlackUserMention';
 import SlackUpic from './SlackUpic';
+import SlackText from './SlackText';
 
 import './SlackMessage.css';
 
-import { observer, inject } from 'mobx-react';
-
 const SLACK_SERVER = 'lesswrongru';
-
-const SpecialMention = ({ text }) => (
-  <span style={{ fontWeight: 'bold', background: '#fff4bf' }}>@{text}</span>
-);
 
 const SlackMessage = inject('store')(
   observer(
     class SlackMessage extends React.Component {
-      parseLink(link) {
-        const fallback = () => <code>{'<' + link + '>'}</code>;
-
-        if (link.substr(0, 2) === '@U') {
-          const user_id = link.substr(1);
-          const user = this.props.store.getUser(user_id);
-          return <SlackUserMention name={user.name} />;
-        } else if (link.substr(0, 2) === '#C') {
-          const match = link.match(RegExp('#C.*?\\|(.*)'));
-          if (!match) {
-            return fallback(); // can't parse
-          }
-          return <SlackChannelMention name={match[1]} />;
-        } else if (link[0] === '!') {
-          return <SpecialMention text={link.substr(1)} />;
-        } else if (link.substr(0, 2) === '@W') {
-          // slack documents that it should be replaced like @U, but I can't find any examples for @W
-          return fallback();
-        } else {
-          return <a href={link}>{link}</a>;
-        }
-      }
-
-      renderText() {
-        const { message } = this.props;
-
-        let text = message.text || '';
-        let bits = text.split(/(<.*?>|\n)/);
-        bits = bits.map(bit => {
-          if (bit === '\n') {
-            return <br />;
-          }
-          const match = bit.match(/^<(.*?)>$/);
-          if (!match) {
-            return bit;
-          }
-          return this.parseLink(match[1]);
-        });
-        return bits;
-
-        text = text.replace(/<(.*?)>/g, (match, inner) =>
-          this.parseLink(inner)
-        );
-        return text;
-      }
 
       render() {
         const { store, message, collapse } = this.props;
@@ -107,7 +57,7 @@ const SlackMessage = inject('store')(
             <div className="slack-message__main">
               {headlineEl}
 
-              <div className="slack-message-text">{this.renderText()}</div>
+              <SlackText message={message} />
             </div>
           </div>
         );
