@@ -66,6 +66,7 @@ const SearchPage = () => (
               ]}
             />
           </NoHide>
+          <div style={{marginBottom: 20}} />
           <RefinementListFilter id="ch" title="Channel" field="channel" />
         </SideBar>
         <LayoutResults>
