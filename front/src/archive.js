@@ -112,9 +112,9 @@ export const ArchiveLog = inject("store")(observer(
     renderDate() {
       return (
         <div className="slack-archive-date">
-        <div>{this.state.prevDate ? <a href={`/archive/${this.channel()}/${this.state.prevDate}`}>←</a> : null}</div>
-        <div>{this.date()}</div>
-        <div>{this.state.nextDate ? <a href={`/archive/${this.channel()}/${this.state.nextDate}`}>→</a> : null}</div>
+          <div>{this.state.prevDate ? <a href={`/archive/${this.channel()}/${this.state.prevDate}`}>←</a> : null}</div>
+          <div>{this.date()}</div>
+          <div>{this.state.nextDate ? <a href={`/archive/${this.channel()}/${this.state.nextDate}`}>→</a> : null}</div>
         </div>
       );
     }
@@ -123,8 +123,8 @@ export const ArchiveLog = inject("store")(observer(
       return (
         <div className="slack-archive">
         <header className="slack-archive-page-title">
-        <SlackChannel name={this.channel()} />
-        {this.renderDate()}
+          <SlackChannel name={this.channel()} />
+          {this.renderDate()}
         </header>
         <div className="slack-archive-messages">
         {

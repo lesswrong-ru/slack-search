@@ -50,7 +50,7 @@ a:hover {
 
 .slack-archive {
   margin: 0 auto;
-  max-width: 800px;
+  max-width: 900px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -82,7 +82,8 @@ a:hover {
 .slack-archive-messages {
   background-color: white;
   border: 1px solid #e8e8e8;
-  padding-bottom: 40px;
+  padding: 10px 0;
+  margin-bottom: 40px;
 }
 
 
