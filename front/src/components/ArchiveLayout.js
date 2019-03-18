@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 const ArchiveLayout = styled.div`
   margin: 0 auto;
+  padding-bottom: 40px;
   max-width: 900px;
   display: flex;
   flex-direction: column;

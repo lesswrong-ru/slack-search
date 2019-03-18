@@ -1,33 +1,31 @@
 import * as React from 'react';
 
+import Link from '../components/Link';
+
 import ArchiveLayout from '../components/ArchiveLayout';
 
-export default class ChannelListPage extends React.Component {
-  state = {
-    channels: [],
-  };
+const ChannelListPage = () => {
+  const [channels, setChannels] = React.useState([]);
 
-  async componentWillMount() {
-    const response = await fetch('/api/archive/channels.json');
-    const json = await response.json();
-    this.setState({ channels: json });
-  }
+  React.useEffect(() => {
+    fetch('/api/archive/channels.json')
+      .then(response => response.json())
+      .then(j => setChannels(j));
+  }, []);
 
-  render() {
-    return (
-      <ArchiveLayout>
-        <ul>
-          {
-            this.state.channels.map(
-              channel => (
-                <li>
-                  <a href={`/archive/${channel.name}`}>{channel.name}</a>
-                </li>
-              )
-            )
-          }
-        </ul>
-      </ArchiveLayout>
-    );
-  }
-}
+  return (
+    <ArchiveLayout>
+      <ul>
+        {channels
+          .sort((c1, c2) => (c1.name < c2.name ? -1 : 1))
+          .map(channel => (
+            <li>
+              <Link href={`/archive/${channel.name}`}>{channel.name}</Link>
+            </li>
+          ))}
+      </ul>
+    </ArchiveLayout>
+  );
+};
+
+export default ChannelListPage;
