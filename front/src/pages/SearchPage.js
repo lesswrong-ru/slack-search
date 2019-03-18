@@ -1,6 +1,8 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 
+import styled from 'styled-components';
+
 import {
   SearchkitManager,
   SearchkitProvider,
@@ -20,7 +22,7 @@ import {
   RefinementListFilter,
 } from 'searchkit';
 
-import SlackSnippet from './components/SlackSnippet';
+import SlackSnippet from '../components/SlackSnippet';
 
 const searchkit = new SearchkitManager('/api/search');
 
@@ -28,11 +30,11 @@ const HitItem = inject('store')(
   observer(props => <SlackSnippet message={props.result._source} />)
 );
 
-const NoHide = ({ children }) => (
-  <div className="no-hide-fix">
-    {children}
-  </div>
-);
+const NoHide = styled.div`
+  .is-disabled {
+    display: block !important;
+  }
+`;
 
 const SearchPage = () => (
   <SearchkitProvider searchkit={searchkit}>

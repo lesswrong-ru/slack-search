@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import SlackChannelMention from './SlackChannelMention';
 import SlackUserMention from './SlackUserMention';
+import Link from './Link';
 
 const SpecialMentionSpan = styled.span`
   font-weight: bold;
@@ -39,7 +40,7 @@ const SlackLink = inject('store')(observer(
       return fallback();
     }
     else {
-      return <a href={link}>{link}</a>;
+      return <Link href={link}>{link}</Link>;
     }
   }
 ));

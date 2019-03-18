@@ -1,10 +1,12 @@
 import * as React from 'react';
 
+import Link from './Link';
+
 const SlackChannelMention = ({name}) => (
   <span className="slack-channel-mention">
-    <a href={`/archive/${name}`}>
+    <Link href={`/archive/${name}`}>
       #{name}
-    </a>
+    </Link>
   </span>
 );
 

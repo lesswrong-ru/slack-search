@@ -1,12 +1,26 @@
 import * as React from 'react';
 
+import styled from 'styled-components';
+
+const UserDiv = styled.div`
+  font-weight: 900;
+  a {
+    text-decoration: none;
+    color: #2c2d30;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
 const SLACK_SERVER = 'lesswrongru'
 const SlackUser = ({ name }) => (
-  <div className="slack-user">
+  <UserDiv>
     <a href={`https://${SLACK_SERVER}.slack.com/team/${name}`}>
       {name}
     </a>
-  </div>
+  </UserDiv>
 );
 
 export default SlackUser;

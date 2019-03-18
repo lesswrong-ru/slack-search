@@ -1,12 +1,12 @@
 import * as React from 'react';
 
+import Link from './Link';
+
 const SLACK_SERVER = 'lesswrongru'
 const SlackUserMention = ({ name }) => (
-  <span className="slack-user-mention">
-    <a href={`https://${SLACK_SERVER}.slack.com/team/${name}`}>
-      @{name}
-    </a>
-  </span>
+  <Link href={`https://${SLACK_SERVER}.slack.com/team/${name}`}>
+    @{name}
+  </Link>
 );
 
 export default SlackUserMention;
