@@ -26,9 +26,9 @@ import SlackSnippet from '../components/SlackSnippet';
 
 const searchkit = new SearchkitManager('/api/search');
 
-const HitItem = inject('store')(
-  observer(props => <SlackSnippet message={props.result._source} />)
-);
+const HitItem = observer(props => (
+  <SlackSnippet message={props.result._source} />
+));
 
 const NoHide = styled.div`
   .is-disabled {
@@ -50,8 +50,18 @@ const SearchPage = () => (
       <LayoutBody>
         <SideBar>
           <NoHide>
-            <InputFilter id="username" title="Username" searchOnChange={true} queryFields={["username"]} />
-            <InputFilter id="channel" title="Channel" searchOnChange={true} queryFields={["channel"]} />
+            <InputFilter
+              id="username"
+              title="Username"
+              searchOnChange={true}
+              queryFields={['username']}
+            />
+            <InputFilter
+              id="channel"
+              title="Channel"
+              searchOnChange={true}
+              queryFields={['channel']}
+            />
             <SortingSelector
               options={[
                 {
@@ -64,7 +74,7 @@ const SearchPage = () => (
               ]}
             />
           </NoHide>
-          <div style={{marginBottom: 20}} />
+          <div style={{ marginBottom: 20 }} />
           <RefinementListFilter id="ch" title="Channel" field="channel" />
         </SideBar>
         <LayoutResults>
