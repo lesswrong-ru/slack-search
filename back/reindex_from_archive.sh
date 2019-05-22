@@ -21,4 +21,5 @@ rm -rf archive-new
 unzip "$ZIP" -d archive-new
 . ./back/venv/bin/activate
 ./back/index_slack.py archive-new ${2:-reindex}
+./back/create_dates_stats.py archive-new
 rm -rf archive-old && mv archive archive-old && mv archive-new archive
