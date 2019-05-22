@@ -9,14 +9,10 @@ const EmptyLink = styled(Link)`
   color: #999;
 `;
 
-const DateLink = ({ date, 'has-messages': hasMessages }) => {
+const DateLink = ({ date, 'has-messages': hasMessages, channel }) => {
   const Component = hasMessages ? Link : EmptyLink;
 
-  return (
-    <Component href={`/archive/${this.props.match.params.channel}/${date}`}>
-      {date}
-    </Component>
-  );
+  return <Component href={`/archive/${channel}/${date}`}>{date}</Component>;
 };
 
 export default class ChannelDatesPage extends React.Component {
@@ -41,7 +37,10 @@ export default class ChannelDatesPage extends React.Component {
         <ul>
           {this.state.dates.map(dateInfo => (
             <li key={dateInfo.date}>
-              <DateLink {...dateInfo} />
+              <DateLink
+                channel={this.props.match.params.channel}
+                {...dateInfo}
+              />
             </li>
           ))}
         </ul>
