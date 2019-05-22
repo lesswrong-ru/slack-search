@@ -46,6 +46,6 @@ const searchkitRouter = SearchkitExpress.createRouter({
 });
 app.use('/api/search', searchkitRouter);
 
-app.listen(8003, 'localhost', () => {
+app.listen(8000, 'localhost', () => {
   console.log('Slack search is listening!');
 });
