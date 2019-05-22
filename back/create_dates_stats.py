@@ -21,7 +21,10 @@ def main():
     dirs = glob.glob(os.path.join(args.archive_dir, '*', ''))
     for d in tqdm(dirs):
         files = []
-        for f in glob.glob(os.path.join(d, '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].json')):
+        for f in sorted(glob.glob(os.path.join(d, '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].json'))):
+            if f == 'dates.json':
+                continue
+
             j = json.load(open(f))
             has_messages = False
             for item in j:
