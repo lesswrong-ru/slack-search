@@ -11,26 +11,28 @@ const archiveDir = path.join(__dirname, '..', 'archive');
 
 app.use('/api/archive', express.static(archiveDir));
 
-app.get(
-  '/api/channel-dates/:channel([\\w\\-]+)',
-  (req, res) => {
-    fs.readdir(
-      path.join(archiveDir, req.params.channel),
-      (err, files) => {
-        res.send(
-          files ? files.map(filename => filename.replace(RegExp('\.json$'), '')) : []
-        );
-      }
+app.get('/api/channel-dates/:channel([\\w\\-]+)', (req, res) => {
+  fs.readdir(path.join(archiveDir, req.params.channel), (err, files) => {
+    res.send(
+      files ? files.map(filename => filename.replace(RegExp('.json$'), '')) : []
     );
-  }
-);
+  });
+});
 
-app.get(
-  '/*',
-  (req, res) => {
-    res.sendFile(`${__dirname}/build/index.html`);
-  }
-);
+app.get('/api/channel-dates-v2/:channel([\\w\\-]+)', (req, res, next) => {
+  const filename = path.join(archiveDir, req.params.channel, 'dates.json');
+  fs.readFile(filename, (err, data) => {
+    if (err) {
+      next(err);
+    } else {
+      res.send(JSON.parse(data));
+    }
+  });
+});
+
+app.get('/*', (req, res) => {
+  res.sendFile(`${__dirname}/build/index.html`);
+});
 
 app.use(bodyParser.json());
 const searchkitRouter = SearchkitExpress.createRouter({
@@ -42,8 +44,8 @@ const searchkitRouter = SearchkitExpress.createRouter({
     return query;
   },
 });
-app.use("/api/search", searchkitRouter);
+app.use('/api/search', searchkitRouter);
 
-app.listen(8000, 'localhost', () => {
+app.listen(8003, 'localhost', () => {
   console.log('Slack search is listening!');
 });

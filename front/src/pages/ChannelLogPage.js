@@ -7,13 +7,22 @@ import SlackChannel from '../components/SlackChannel';
 import SlackMessage from '../components/SlackMessage';
 import ArchiveLayout from '../components/ArchiveLayout';
 
+async function getNonemptyDates(channel) {
+  const response = await fetch(`/api/channel-dates-v2/${channel}`);
+
+  const detailedDates = await response.json();
+  const nonemptyDetailedDates = detailedDates.filter(d => d['has-messages']);
+  const dates = nonemptyDetailedDates.map(d => d['date']);
+
+  return dates;
+}
+
 async function findPrevNextDate(channel, date) {
-  const response = await fetch(`/api/channel-dates/${channel}`)
-  const dates = await response.json();
+  const dates = await getNonemptyDates(channel);
 
   const index = dates.findIndex(d => d === date);
 
-  const dateByIndex = (i) => (0 <= i && i < dates.length) ? dates[i] : null;
+  const dateByIndex = i => (0 <= i && i < dates.length ? dates[i] : null);
   return [dateByIndex(index - 1), dateByIndex(index + 1)];
 }
 
@@ -39,57 +48,74 @@ const MessagesDiv = styled.div`
   margin-bottom: 40px;
 `;
 
-const ChannelLogPage = inject("store")(observer(
-  class ChannelLogPage extends React.Component {
-    state = {
-      log: [],
-    };
+const ChannelLogPage = inject('store')(
+  observer(
+    class ChannelLogPage extends React.Component {
+      state = {
+        log: [],
+      };
 
-    async componentWillMount() {
-      const response = await fetch(`/api/archive/${this.channel()}/${this.date()}.json`);
-      const json = await response.json();
+      async componentWillMount() {
+        const response = await fetch(
+          `/api/archive/${this.channel()}/${this.date()}.json`
+        );
+        const json = await response.json();
 
-      this.setState({
-        log: json,
-      });
-      await this.addPrevNextLinks();
-    }
+        this.setState({
+          log: json,
+        });
+        await this.addPrevNextLinks();
+      }
 
-    async addPrevNextLinks() {
-      const [prevDate, nextDate] = await findPrevNextDate(this.channel(), this.date());
-      this.setState({
-        prevDate, nextDate
-      });
-    }
+      async addPrevNextLinks() {
+        const [prevDate, nextDate] = await findPrevNextDate(
+          this.channel(),
+          this.date()
+        );
+        this.setState({
+          prevDate,
+          nextDate,
+        });
+      }
 
-    channel() {
-      return this.props.match.params.channel;
-    }
-    date() {
-      return this.props.match.params.date;
-    }
+      channel() {
+        return this.props.match.params.channel;
+      }
+      date() {
+        return this.props.match.params.date;
+      }
 
-    renderDate() {
-      return (
-        <DateLine>
-          <div>{this.state.prevDate ? <a href={`/archive/${this.channel()}/${this.state.prevDate}`}>←</a> : null}</div>
-          <div>{this.date()}</div>
-          <div>{this.state.nextDate ? <a href={`/archive/${this.channel()}/${this.state.nextDate}`}>→</a> : null}</div>
-        </DateLine>
-      );
-    }
+      renderDate() {
+        return (
+          <DateLine>
+            <div>
+              {this.state.prevDate ? (
+                <a href={`/archive/${this.channel()}/${this.state.prevDate}`}>
+                  ←
+                </a>
+              ) : null}
+            </div>
+            <div>{this.date()}</div>
+            <div>
+              {this.state.nextDate ? (
+                <a href={`/archive/${this.channel()}/${this.state.nextDate}`}>
+                  →
+                </a>
+              ) : null}
+            </div>
+          </DateLine>
+        );
+      }
 
-    render() {
-      return (
-        <ArchiveLayout>
-          <header className="slack-archive-page-title">
-            <SlackChannel name={this.channel()} />
-            {this.renderDate()}
-          </header>
-          <MessagesDiv>
-          {
-            this.state.log.map(
-              (item, i) => {
+      render() {
+        return (
+          <ArchiveLayout>
+            <header className="slack-archive-page-title">
+              <SlackChannel name={this.channel()} />
+              {this.renderDate()}
+            </header>
+            <MessagesDiv>
+              {this.state.log.map((item, i) => {
                 let user = this.props.store.users.get(item.user);
                 if (!user) {
                   user = {
@@ -102,7 +128,10 @@ const ChannelLogPage = inject("store")(observer(
                 let collapse = false;
                 if (i > 0) {
                   const prevItem = this.state.log[i - 1];
-                  if (item.user === prevItem.user && parseFloat(item.ts) - parseFloat(prevItem.ts) < 300) {
+                  if (
+                    item.user === prevItem.user &&
+                    parseFloat(item.ts) - parseFloat(prevItem.ts) < 300
+                  ) {
                     collapse = true;
                   }
                 }
@@ -111,15 +140,16 @@ const ChannelLogPage = inject("store")(observer(
                   ...item,
                   channel: this.props.match.params.channel,
                 };
-                return <SlackMessage message={message} collapse={collapse} key={i} />;
-              }
-            )
-          }
-          </MessagesDiv>
-        </ArchiveLayout>
-      );
+                return (
+                  <SlackMessage message={message} collapse={collapse} key={i} />
+                );
+              })}
+            </MessagesDiv>
+          </ArchiveLayout>
+        );
+      }
     }
-  }
-));
+  )
+);
 
 export default ChannelLogPage;
