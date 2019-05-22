@@ -22,13 +22,10 @@ def main():
     for d in tqdm(dirs):
         files = []
         for f in sorted(glob.glob(os.path.join(d, '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].json'))):
-            if f == 'dates.json':
-                continue
-
             j = json.load(open(f))
             has_messages = False
             for item in j:
-                if item.get('subtype', None) in ['channel_join', 'channel_left']:
+                if item.get('subtype', None) not in ['channel_join', 'channel_left']:
                     has_messages = True
                     break
             files.append({
